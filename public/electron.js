@@ -11,9 +11,11 @@ function createWindow() {
     // communicate between node-land and browser-land.
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
-    },
+    }
   });
 
+  mainWindow.setMenuBarVisibility(false);
+  
   // In production, set the initial browser path to the local bundle generated
   // by the Create React App build process.
   // In development, set it to localhost to allow live/hot-reloading.
