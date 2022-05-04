@@ -1,31 +1,67 @@
 {
   "name": "ipfs-archive",
   "version": "1.0.0",
-  "description": "-",
-  "main": "main.js",
-  "scripts": {
-    "start": "electron .",
-    "test": "test"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/b7011343/ipfs-archive.git"
-  },
-  "keywords": [
-    "ipfs",
-    "backup",
-    "secure",
-    "e2ee",
-    "service"
-  ],
+  "private": true,
+  "main": "./public/electron.js",
+  "homepage": "./",
   "author": "Jacob Whitehead",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/b7011343/ipfs-archive/issues"
+  "description": "A free to use IPFS backup service",
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.2.0",
+    "@testing-library/user-event": "^13.5.0",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4"
   },
-  "homepage": "https://github.com/b7011343/ipfs-archive#readme",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "electron:start": "concurrently -k \"cross-env BROWSER=none npm start\" \"wait-on http://localhost:3000 && electronmon .\"",
+    "electron:package:mac": "npm build && electron-builder -m -c.extraMetadata.main=build/electron.js",
+    "electron:package:win": "npm build && electron-builder -w -c.extraMetadata.main=build/electron.js",
+    "electron:package:linux": "npm build && electron-builder -l -c.extraMetadata.main=build/electron.js"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      "last 1 electron version"
+    ],
+    "development": [
+      "last 1 electron version"
+    ]
+  },
   "devDependencies": {
+    "concurrently": "^7.1.0",
+    "cross-env": "^7.0.3",
     "electron": "^18.2.0",
-    "prettier": "^2.6.2"
+    "electron-builder": "^23.0.3",
+    "electronmon": "^2.0.2",
+    "prettier": "^2.6.2",
+    "wait-on": "^6.0.1"
+  },
+  "build": {
+    "appId": "com.electron.ipfs-archive",
+    "productName": "IPFS Archive",
+    "files": ["build/**/*", "node_modules/**/*"],
+    "directories": {
+      "buildResources": "public"
+    },
+    "mac": {
+      "target": "dmg"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "deb"
+    }
   }
 }
