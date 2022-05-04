@@ -2,7 +2,8 @@ import React from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import { styled } from '@mui/material/styles';
 import { Routes, Route } from "react-router-dom";
-import { Drawer, Box, AppBar as MuiAppBar, Toolbar, Typography, Divider } from '@mui/material';
+import { Drawer, Box, AppBar as MuiAppBar, Toolbar, Typography, Divider, IconButton } from '@mui/material';
+import { DisabledByDefault, Minimize } from '@mui/icons-material';
 import logo from './icon.png';
 
 
@@ -15,7 +16,10 @@ const StyledDrawer = styled(Drawer, { defaultShouldForwardProp: true })({
 
 const StyledToolbar = styled(Toolbar, { defaultShouldForwardProp: true })({
   minHeight: '65px !important',
-  width: drawerWidth
+  width: '100%',
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'space-between'
 });
 
 const AppBar = styled(MuiAppBar, { defaultShouldForwardProp: true })(({ theme }) => ({
@@ -24,9 +28,8 @@ const AppBar = styled(MuiAppBar, { defaultShouldForwardProp: true })(({ theme })
   boxShadow: 'none',
   minHeight: '65px',
   borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
-  width: drawerWidth,
   position: 'absolute',
-  left: '0',
+  left: '0'
 }));
 
 const StyledImg = styled('img', { defaultShouldForwardProp: true })({
@@ -41,7 +44,7 @@ const App = () => {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="fixed" open={true}>
+      <AppBar position="fixed" open={true} className='draggable'>
         <StyledToolbar>
           <Typography
             variant="h6"
@@ -53,6 +56,14 @@ const App = () => {
             />
             <b>IPFS Archive</b>
           </Typography>
+          <Toolbar sx={{ marginRight: '-15px' }}>
+            <IconButton title='Close the app' color="default" component="span" className='undraggable' onClick={() => window.control.minimize()}>
+              <Minimize/>
+            </IconButton>
+            <IconButton title='Minimize the app' color="error" component="span" className='undraggable' onClick={() => window.control.close()}>
+              <DisabledByDefault/>
+            </IconButton>
+          </Toolbar>
         </StyledToolbar>
       </AppBar>
       <StyledDrawer

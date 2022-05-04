@@ -1,4 +1,4 @@
-const { app, BrowserWindow, protocol } = require("electron");
+const { app, BrowserWindow, protocol, ipcMain } = require("electron");
 const path = require("path");
 const url = require("url");
 
@@ -12,16 +12,20 @@ function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
-    show:false,
-    fullscreenable:false,
+    show: false,
+    fullscreenable: false,
     fullscreen: false,
+    resizable: false,
+    frame: false,
+    enableRemoteModule: true
   });
 
   mainWindow.setMenuBarVisibility(false);
 
-  mainWindow.once('ready-to-show', () => {
-    mainWindow.show();
-  });
+  mainWindow.once('ready-to-show', () => mainWindow.show());
+
+  ipcMain.handle('min', () => mainWindow.minimize());
+  ipcMain.handle('close', () => app.quit());
   
   // In production, set the initial browser path to the local bundle generated
   // by the Create React App build process.
