@@ -4,10 +4,12 @@ import { styled } from '@mui/material/styles';
 import { Routes, Route } from "react-router-dom";
 import { Drawer, Box, AppBar as MuiAppBar, Toolbar, Typography, Divider, IconButton } from '@mui/material';
 import { DisabledByDefault, Minimize } from '@mui/icons-material';
+import { Home, Backup, Recover, Settings } from './pages';
+import { NavMenu } from './components';
 import logo from './icon.png';
 
 
-const drawerWidth = 205;
+const drawerWidth = 160;
 
 const StyledDrawer = styled(Drawer, { defaultShouldForwardProp: true })({
   flexShrink: 0,
@@ -38,7 +40,7 @@ const StyledImg = styled('img', { defaultShouldForwardProp: true })({
     padding: '4px',
     width: '32px',
     height: '32px'
-})
+});
 
 const App = () => {
   return (
@@ -56,11 +58,11 @@ const App = () => {
             />
             <b>IPFS Archive</b>
           </Typography>
-          <Toolbar sx={{ marginRight: '-15px' }}>
-            <IconButton title='Close the app' color="default" component="span" className='undraggable' onClick={() => window.control.minimize()}>
+          <Toolbar sx={{ marginRight: '-2px' }}>
+            <IconButton title='Minimize the app' color="default" component="span" className='undraggable' onClick={() => window.control.minimize()}>
               <Minimize/>
             </IconButton>
-            <IconButton title='Minimize the app' color="error" component="span" className='undraggable' onClick={() => window.control.close()}>
+            <IconButton title='Close the app' color="error" component="span" className='undraggable' onClick={() => window.control.close()}>
               <DisabledByDefault/>
             </IconButton>
           </Toolbar>
@@ -72,7 +74,7 @@ const App = () => {
         open={true}
       >
         <Divider sx={{ marginTop: '65px' }} />
-        {/* <NavMenu /> */}
+        <NavMenu />
         <Divider />
       </StyledDrawer>
       <Box
@@ -87,12 +89,12 @@ const App = () => {
           overflow: 'auto',
         }}
       >
-        <Toolbar />
+        {/* <Toolbar /> */}
         <Routes>
-          <Route path="/" element={null} />
-          <Route path="/backup" element={null} />
-          <Route path="/recover" element={null} />
-          <Route path="/settings" element={null} />
+          <Route path="/" element={Home} />
+          <Route path="/backup" element={Backup} />
+          <Route path="/recover" element={Recover} />
+          <Route path="/settings" element={Settings} />
         </Routes>
       </Box>
     </Box>

@@ -1,1 +1,1 @@
-export { StyledLink } from './StyledLink';
+export { NavMenu } from './NavMenu';

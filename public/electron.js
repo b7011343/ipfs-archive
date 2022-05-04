@@ -2,6 +2,7 @@ const { app, BrowserWindow, protocol, ipcMain } = require("electron");
 const path = require("path");
 const url = require("url");
 
+
 // Create the native browser window.
 function createWindow() {
   const mainWindow = new BrowserWindow({
