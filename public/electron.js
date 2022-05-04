@@ -11,10 +11,17 @@ function createWindow() {
     // communicate between node-land and browser-land.
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
-    }
+    },
+    show:false,
+    fullscreenable:false,
+    fullscreen: false,
   });
 
   mainWindow.setMenuBarVisibility(false);
+
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show();
+  });
   
   // In production, set the initial browser path to the local bundle generated
   // by the Create React App build process.
