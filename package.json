@@ -6,6 +6,15 @@
   "homepage": "./",
   "author": "Jacob Whitehead",
   "description": "A free to use IPFS backup service",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "electron:start": "concurrently -k \"cross-env BROWSER=none npm start\" \"wait-on http://localhost:3000 && electronmon .\"",
+    "electron:package:mac": "npm run build && electron-builder -m -c.extraMetadata.main=build/electron.js",
+    "electron:package:win": "npm run build && electron-builder -w -c.extraMetadata.main=build/electron.js",
+    "electron:package:linux": "npm run build && electron-builder -l -c.extraMetadata.main=build/electron.js"
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.2.0",
@@ -15,14 +24,14 @@
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "electron:start": "concurrently -k \"cross-env BROWSER=none npm start\" \"wait-on http://localhost:3000 && electronmon .\"",
-    "electron:package:mac": "npm build && electron-builder -m -c.extraMetadata.main=build/electron.js",
-    "electron:package:win": "npm build && electron-builder -w -c.extraMetadata.main=build/electron.js",
-    "electron:package:linux": "npm build && electron-builder -l -c.extraMetadata.main=build/electron.js"
+  "devDependencies": {
+    "concurrently": "^7.1.0",
+    "cross-env": "^7.0.3",
+    "electron": "^18.2.0",
+    "electron-builder": "^23.0.3",
+    "electronmon": "^2.0.2",
+    "prettier": "^2.6.2",
+    "wait-on": "^6.0.1"
   },
   "eslintConfig": {
     "extends": [
@@ -37,15 +46,6 @@
     "development": [
       "last 1 electron version"
     ]
-  },
-  "devDependencies": {
-    "concurrently": "^7.1.0",
-    "cross-env": "^7.0.3",
-    "electron": "^18.2.0",
-    "electron-builder": "^23.0.3",
-    "electronmon": "^2.0.2",
-    "prettier": "^2.6.2",
-    "wait-on": "^6.0.1"
   },
   "build": {
     "appId": "com.electron.ipfs-archive",
