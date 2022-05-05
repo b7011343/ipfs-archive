@@ -1,20 +1,23 @@
 [
   {
     "field": "startTime",
+    "description": "The time the backup began",
     "headerName": "Start Time (UTC)",
     "type": "string",
-    "width": "100%"
+    "flex": 2
   },
   {
     "field": "backupSize",
+    "description": "The number of GB backed up",
     "headerName": "Backup Size (GB)",
     "type": "number",
-    "width": "100%"
+    "flex": 1
   },
   {
     "field": "duration",
+    "description": "The number of hours it took to complete the backup",
     "headerName": "Duration (Hours)",
     "type": "number",
-    "width": "100%"
+    "flex": 1
   }
 ]

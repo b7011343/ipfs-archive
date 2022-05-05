@@ -84,7 +84,9 @@ export const Home = () => {
         <DataGrid
           rows={rows}
           columns={columns}
-          pageSize={5}
+          pageSize={3}
+          rowsPerPageOptions={[3]}
+          sx={{ height: '600px' }}
           autoHeight
           density='compact'
         />
