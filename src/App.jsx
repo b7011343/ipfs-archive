@@ -91,10 +91,6 @@ const App = () => {
       >
         <Routes>
           {routes.map((x, i) => (<Route key={i} path={x.route} element={x.element} />))}
-          {/* <Route path="/" element={<Home/>} />
-          <Route path="/backup" element={<Backup/>} />
-          <Route path="/recover" element={<Recover/>} />
-          <Route path="/settings" element={<Settings/>} /> */}
         </Routes>
       </Box>
     </Box>

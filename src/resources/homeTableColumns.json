@@ -1,0 +1,20 @@
+[
+  {
+    "field": "startTime",
+    "headerName": "Start Time (UTC)",
+    "type": "string",
+    "width": "100%"
+  },
+  {
+    "field": "backupSize",
+    "headerName": "Backup Size (GB)",
+    "type": "number",
+    "width": "100%"
+  },
+  {
+    "field": "duration",
+    "headerName": "Duration (Hours)",
+    "type": "number",
+    "width": "100%"
+  }
+]

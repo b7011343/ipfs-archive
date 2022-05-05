@@ -6,8 +6,8 @@ const url = require("url");
 // Create the native browser window.
 function createWindow() {
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 500,
+    width: 850,
+    height: 700,
     // Set the path of an additional "preload" script that can be used to
     // communicate between node-land and browser-land.
     webPreferences: {
@@ -17,8 +17,7 @@ function createWindow() {
     fullscreenable: false,
     fullscreen: false,
     resizable: false,
-    frame: false,
-    enableRemoteModule: true
+    frame: false
   });
 
   mainWindow.setMenuBarVisibility(false);
