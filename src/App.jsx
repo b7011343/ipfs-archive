@@ -1,11 +1,11 @@
 import React from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import { styled } from '@mui/material/styles';
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { Drawer, Box, AppBar as MuiAppBar, Toolbar, Typography, Divider, IconButton } from '@mui/material';
 import { DisabledByDefault, Minimize } from '@mui/icons-material';
-import { Home, Backup, Recover, Settings } from './pages';
 import { NavMenu } from './components';
+import routes from './resources/routes';
 import logo from './icon.png';
 
 
@@ -43,9 +43,6 @@ const StyledImg = styled('img', { defaultShouldForwardProp: true })({
 });
 
 const App = () => {
-  const location = useLocation();
-  console.log(location)
-
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -93,10 +90,11 @@ const App = () => {
         }}
       >
         <Routes>
-          <Route path="/" element={<Home/>} />
+          {routes.map((x, i) => (<Route key={i} path={x.route} element={x.element} />))}
+          {/* <Route path="/" element={<Home/>} />
           <Route path="/backup" element={<Backup/>} />
           <Route path="/recover" element={<Recover/>} />
-          <Route path="/settings" element={<Settings/>} />
+          <Route path="/settings" element={<Settings/>} /> */}
         </Routes>
       </Box>
     </Box>

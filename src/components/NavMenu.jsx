@@ -1,25 +1,14 @@
 import React from 'react';
-import { List, Box, ListItem, ListItemIcon, Divider, ListItemText } from '@mui/material';
+import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import { NavLink } from 'react-router-dom';
-import navMenuData from './data/NavMenu';
+import navMenuData from '../resources/navMenu';
 
-
-const activeStyle = {
-  textDecoration: 'none',
-  color: 'black',
-  textDecorationThickness: '50px'
-};
-
-const inactiveStyle = {
-  textDecoration: 'none',
-  color: 'black'
-};
 
 const NavItem = ({ title, link, icon }) => {
   return (
     <NavLink
       to={link}
-      style={({ isActive }) => isActive ? activeStyle : inactiveStyle}
+      style={{ textDecoration: 'none', color: 'black' }}
     >
       {({ isActive }) => (
         <ListItem button selected={isActive}>
