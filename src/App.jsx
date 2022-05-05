@@ -1,7 +1,7 @@
 import React from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import { styled } from '@mui/material/styles';
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { Drawer, Box, AppBar as MuiAppBar, Toolbar, Typography, Divider, IconButton } from '@mui/material';
 import { DisabledByDefault, Minimize } from '@mui/icons-material';
 import { Home, Backup, Recover, Settings } from './pages';
@@ -43,6 +43,9 @@ const StyledImg = styled('img', { defaultShouldForwardProp: true })({
 });
 
 const App = () => {
+  const location = useLocation();
+  console.log(location)
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -58,7 +61,7 @@ const App = () => {
             />
             <b>IPFS Archive</b>
           </Typography>
-          <Toolbar sx={{ marginRight: '-2px' }}>
+          <Toolbar sx={{ marginRight: '-24px' }}>
             <IconButton title='Minimize the app' color="default" component="span" className='undraggable' onClick={() => window.control.minimize()}>
               <Minimize/>
             </IconButton>
@@ -75,10 +78,8 @@ const App = () => {
       >
         <Divider sx={{ marginTop: '65px' }} />
         <NavMenu />
-        <Divider />
       </StyledDrawer>
       <Box
-        component="main"
         sx={{
           backgroundColor: (theme) =>
             theme.palette.mode === 'light'
@@ -87,14 +88,15 @@ const App = () => {
           flexGrow: 1,
           height: '100vh',
           overflow: 'auto',
+          padding: '15px',
+          paddingTop: '80px'
         }}
       >
-        {/* <Toolbar /> */}
         <Routes>
-          <Route path="/" element={Home} />
-          <Route path="/backup" element={Backup} />
-          <Route path="/recover" element={Recover} />
-          <Route path="/settings" element={Settings} />
+          <Route path="/" element={<Home/>} />
+          <Route path="/backup" element={<Backup/>} />
+          <Route path="/recover" element={<Recover/>} />
+          <Route path="/settings" element={<Settings/>} />
         </Routes>
       </Box>
     </Box>
