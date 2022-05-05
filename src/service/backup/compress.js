@@ -1,2 +1,0 @@
-const zip = require('bestzip');
-
