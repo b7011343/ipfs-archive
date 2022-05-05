@@ -3,7 +3,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { styled } from '@mui/material/styles';
 import { Routes, Route } from "react-router-dom";
 import { Drawer, Box, AppBar as MuiAppBar, Toolbar, Typography, Divider, IconButton } from '@mui/material';
-import { DisabledByDefault, Minimize } from '@mui/icons-material';
+import { Close, Minimize } from '@mui/icons-material';
 import { NavMenu } from './components';
 import routes from './resources/routes';
 import logo from './icon.png';
@@ -62,8 +62,8 @@ const App = () => {
             <IconButton title='Minimize the app' color="default" component="span" className='undraggable' onClick={() => window.control.minimize()}>
               <Minimize/>
             </IconButton>
-            <IconButton title='Close the app' color="error" component="span" className='undraggable' onClick={() => window.control.close()}>
-              <DisabledByDefault/>
+            <IconButton title='Close the app' color="default" component="span" className='undraggable' onClick={() => window.control.close()}>
+              <Close/>
             </IconButton>
           </Toolbar>
         </StyledToolbar>

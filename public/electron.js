@@ -92,7 +92,6 @@ const allowedNavigationDestinations = "https://my-electron-app.com";
 app.on("web-contents-created", (event, contents) => {
   contents.on("will-navigate", (event, navigationUrl) => {
     const parsedUrl = new URL(navigationUrl);
-
     if (!allowedNavigationDestinations.includes(parsedUrl.origin)) {
       event.preventDefault();
     }

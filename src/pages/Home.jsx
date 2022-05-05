@@ -37,7 +37,7 @@ export const Home = () => {
           <Button onClick={() => navigate('/backup')} variant='contained' sx={{ width: 'fit-content', marginBottom: '5px' }} size='small' color='primary'>
             Backup
           </Button>
-          <Button onClick={() => navigate('/recover')} variant='contained' sx={{ width: 'fit-content' }} size='small' color='primary'>
+          <Button onClick={() => navigate('/recover')} variant='outlined' sx={{ width: 'fit-content' }} size='small' color='primary'>
             Recover
           </Button>
         </Grid>
