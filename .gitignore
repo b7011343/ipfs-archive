@@ -58,3 +58,5 @@ spec/fixtures/logo.png
 /dist
 
 /build
+
+*.zip

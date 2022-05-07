@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Grid, Button, Typography, Paper, Divider, FormControlLabel, Checkbox, TextField, FormGroup } from '@mui/material';
 import { DesktopTimePicker } from '@mui/x-date-pickers';
 import { LinearProgressWithLabel } from '../components';
-import { backup } from '../service';
 
 
 export const Backup = () => {
@@ -39,7 +38,7 @@ export const Backup = () => {
               <LinearProgressWithLabel value={20} />
             </Grid>
             <Grid item container xs={5} justifyContent='flex-end'>
-              <Button size='small' variant='contained' onClick={backup}>
+              <Button size='small' variant='contained' onClick={() => window.service.backup()}>
                 Start Backup
               </Button>
             </Grid>
@@ -52,7 +51,6 @@ export const Backup = () => {
                 value='16:02 : Backup initialised'
                 size='small'
                 rows={7}
-                // disabled
                 sx={{ width: '100%', height: '100%' }}
               />
             </Paper>

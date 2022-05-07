@@ -1,11 +1,12 @@
-import { v1 as uuid } from 'uuid';
+const { v1: uuid } = require('uuid');
 const CryptoJS = require('crypto-js');
 const fs = require('fs');
-const { archiver } = require('archiver');
-const { Web3Storage } = require('web3.storage');
+const archiver = require('archiver');
+const { Web3Storage, getFilesFromPath } = require('web3.storage');
+const crypto = require('crypto');
  
 
-const apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDcxMjBFM2Y0Y2E0NWM1RmI3MzQ5NmFhMzk4OWU5MjI2MjdGMDkzNzQiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NTA3MjIxNDIyNzIsIm5hbWUiOiJCYWNrdXAifQ.BOmYNu27PzV12uVE0xTOkCU4ab-ZK4pReXDi14cjEpo[f3094f0232ftq';
+const apiKey = '';
 
 const dirs = [
   "D:\\Bandicam"
@@ -13,21 +14,27 @@ const dirs = [
 
 const getDestinationDir = () => (`./${uuid()}.zip`);
 
-const uploadIPFS = async (file) => {
+const cleanupTempFiles = () => {
+
+};
+
+const uploadIPFS = async (filePath) => {
   const storage = new Web3Storage({ token: apiKey });
+  const file = await getFilesFromPath(filePath);
+  console.log(file)
   const cid = await storage.put(file);
   console.log('Content added with CID:', cid);
   return cid;
 };
 
-const compress = (dir) => {
+const compress = async (dir) => {
   console.log(`Compressing ${dir}`);
   const destinationDir = getDestinationDir();
   const outputStream = fs.createWriteStream(destinationDir);
   const archive = archiver('zip', { zlib: { level: 9 }});
   return new Promise((resolve, reject) => {
     archive.directory(dir, false)
-           .on('error', err => reject(err))
+           .on('error', (err) => reject(err))
            .pipe(outputStream);
 
     outputStream.on('close', () => resolve(destinationDir));
@@ -35,21 +42,18 @@ const compress = (dir) => {
   });
 };
 
-const encrypt = (dir) => {
-  console.log(`Encrpting ${dir}`);
+const encrypt = async (dir) => {
+  console.log(`Encrypting ${dir}`);
+  const destinationDir = `./aes-${dir.substring(2, dir.length)}`;
   return new Promise((resolve, reject) => {
-    let zipFile = '';
     const compressedDirReadStream = fs.createReadStream(dir, { encoding: 'base64' });
-    
-    compressedDirReadStream.on('data', (chunk) => zipFile += chunk);
-    
-    compressedDirReadStream.on('end', async () => {
-      const encryptedZipFile = CryptoJS.AES.encrypt(zipFile, apiKey).toString();
-      resolve(encryptedZipFile);
-    });
-
+    const outputStream = fs.createWriteStream(destinationDir, { encoding: 'base64' });
+    const encryptionKey = CryptoJS.MD5(apiKey).toString();    
+    const cipher = crypto.createCipher('aes-256-cbc', encryptionKey);
+    compressedDirReadStream.pipe(cipher).pipe(outputStream);
+    outputStream.on('error', (err) => reject(err));
+    outputStream.on('finish', () => resolve(destinationDir));
     compressedDirReadStream.on('error', (err) => {
-      console.error(err);
       reject(err);
     });
   });
@@ -58,15 +62,19 @@ const encrypt = (dir) => {
 const _backup = async (dir) => {
   console.log(`Backing up ${dir}`);
   const compressedDir = await compress(dir);
+  console.log('-----Compressed', compressedDir)
   const encryptedZipFile = await encrypt(compressedDir);
-  const cid = await uploadIPFS(encryptedZipFile);
+  console.log('-----Encrypted', encryptedZipFile)
+  const cid = await uploadIPFS(encryptedZipFile, compressedDir);
   console.log(cid);
 };
 
-export const backup = async () => {
+const backup = async () => {
   console.log('Starting backup');
   for (const dir of dirs) {
-    _backup(dir);
+    await _backup(dir);
   }
   console.log('Backup complete');
 };
+
+exports.backup = backup;

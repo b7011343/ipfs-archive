@@ -1,4 +1,5 @@
 const { app, BrowserWindow, protocol, ipcMain } = require("electron");
+const { backup } = require('../src/service/backup');
 const path = require("path");
 const url = require("url");
 
@@ -24,6 +25,7 @@ const createWindow = () => {
 
   ipcMain.handle('min', () => mainWindow.minimize());
   ipcMain.handle('close', () => app.quit());
+  ipcMain.handle('backup', () => backup());
   
   // In production, set the initial browser path to the local bundle generated
   // by the Create React App build process.

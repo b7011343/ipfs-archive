@@ -10,7 +10,6 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
     "electron:start": "concurrently -k \"cross-env BROWSER=none npm start\" \"wait-on http://localhost:3000 && electronmon .\"",
     "electron:package:mac": "npm run build && electron-builder -m -c.extraMetadata.main=build/electron.js",
     "electron:package:win": "npm run build && electron-builder -w -c.extraMetadata.main=build/electron.js",
@@ -82,11 +81,6 @@
     "linux": {
       "target": "deb"
     }
-  },
-  "browser": {
-    "fs": false,
-    "path": false,
-    "os": false
   },
   "node": {
     "fs": false,

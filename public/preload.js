@@ -10,6 +10,12 @@ process.once("loaded", () => {
   });
 
   contextBridge.exposeInMainWorld('service', {
+    backup: () => {
+      console.log('Backup');
+      ipcRenderer.invoke('backup');
+    },
+    recover: () => {
 
+    }
   });
 });
