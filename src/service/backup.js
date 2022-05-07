@@ -7,6 +7,7 @@ const crypto = require('crypto');
  
 
 const apiKey = '';
+const storageClient = new Web3Storage({ token: apiKey });
 
 const dirs = [
   "D:\\Bandicam"
@@ -14,15 +15,15 @@ const dirs = [
 
 const getDestinationDir = () => (`./${uuid()}.zip`);
 
+// eslint-disable-next-line no-unused-vars
 const cleanupTempFiles = () => {
 
 };
 
 const uploadIPFS = async (filePath) => {
-  const storage = new Web3Storage({ token: apiKey });
   const file = await getFilesFromPath(filePath);
   console.log(file)
-  const cid = await storage.put(file);
+  const cid = await storageClient.put(file);
   console.log('Content added with CID:', cid);
   return cid;
 };

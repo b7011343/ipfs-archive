@@ -14,8 +14,9 @@ process.once("loaded", () => {
       console.log('Backup');
       ipcRenderer.invoke('backup');
     },
-    recover: () => {
-
+    recover: (cid) => {
+      console.log('Backup');
+      ipcRenderer.invoke('recover', undefined, cid);
     }
   });
 });
