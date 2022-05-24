@@ -1,25 +1,38 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Grid, Box, TextField, FormControl, Button, Divider, OutlinedInput, InputAdornment, IconButton, InputLabel, FormHelperText } from '@mui/material';
 import { DriveFileMove } from '@mui/icons-material';
 
 
 export const Recover = () => {
+  const [recoverPath, setRecoverPath] = useState(localStorage.getItem('recoverPath'));
+
+  useEffect(() => {
+    localStorage.recoverPath = recoverPath;
+  }, [recoverPath]);
+
   return (
-    <Grid container p={20} pt={25.5} justifyContent='center' alignItems='center'>
+    <Grid container p={20} pt={24} justifyContent='center' alignItems='center'>
       <Box>
         <FormControl>
           <TextField size='small' autoFocus label='Backup CID' helperText='You can find your latest backup CIDs on web3.storage' />
-          <FormControl variant='outlined' sx={{ marginTop: '15px' }}>
-            <InputLabel htmlFor="file-path" sx={{ marginTop: '-6px' }}>Destination Path</InputLabel>
+          <FormControl title={recoverPath} variant='outlined' sx={{ marginTop: '20px' }}>
+            <InputLabel title={recoverPath} htmlFor="file-path" sx={{ marginTop: '-6px' }}>Destination Path</InputLabel>
             <OutlinedInput
               id='file-path'
               label='Destination Path'
               disabled
+              title={recoverPath}
+              value={recoverPath}
               size='small'
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
-                    onClick={null}
+                    onClick={() => {
+                      window.system.openRecoverDirDialog().then((dir) => {
+                        console.log(dir)
+                        setRecoverPath(dir);
+                      });
+                    }}
                     edge="end"
                   >
                     <DriveFileMove/>

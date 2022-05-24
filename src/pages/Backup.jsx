@@ -38,7 +38,7 @@ export const Backup = () => {
               <LinearProgressWithLabel value={20} />
             </Grid>
             <Grid item container xs={5} justifyContent='flex-end'>
-              <Button size='small' variant='contained' onClick={() => window.service.backup()}>
+              <Button size='small' variant='contained' onClick={() => window.service.backup(localStorage.getItem('apiKey'))}>
                 Start Backup
               </Button>
             </Grid>

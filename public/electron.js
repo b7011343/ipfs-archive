@@ -1,4 +1,4 @@
-const { app, BrowserWindow, protocol, ipcMain } = require('electron');
+const { app, BrowserWindow, protocol, ipcMain, dialog } = require('electron');
 const { backup } = require('../src/service/backup');
 const { recover } = require('../src/service/recover');
 const path = require('path');
@@ -26,8 +26,16 @@ const createWindow = () => {
 
   ipcMain.handle('min', () => mainWindow.minimize());
   ipcMain.handle('close', () => app.quit());
-  ipcMain.handle('backup', () => backup());
-  ipcMain.handle('recover', (cid) => recover(cid));
+  ipcMain.handle('backup', (event, apiKey) => backup(apiKey));
+  ipcMain.handle('recover', (event, cid, apiKey) => recover(cid, apiKey));
+
+  ipcMain.handle('select-dirs', async (event, arg) => {
+    const result = await dialog.showOpenDialog(mainWindow, {
+      properties: ['openDirectory']
+    });
+    const dir = result.filePaths[0];
+    return dir;
+  })
   
   // In production, set the initial browser path to the local bundle generated
   // by the Create React App build process.

@@ -6,17 +6,25 @@ process.once("loaded", () => {
 
   contextBridge.exposeInMainWorld('system', {
     minimize: () => ipcRenderer.invoke('min'),
-    close: () => ipcRenderer.invoke('close')
+    close: () => ipcRenderer.invoke('close'),
+    openRecoverDirDialog: async () => {
+      const dir = await ipcRenderer.invoke('select-dirs');
+      return dir;
+    },
   });
 
   contextBridge.exposeInMainWorld('service', {
-    backup: () => {
-      console.log('Backup');
-      ipcRenderer.invoke('backup');
+    backup: (apiKey) => {
+      console.log('Backup', apiKey);
+      ipcRenderer.invoke('backup', apiKey);
     },
-    recover: (cid) => {
+    recover: (cid, apiKey) => {
       console.log('Recover');
-      ipcRenderer.invoke('recover', undefined, cid);
+      ipcRenderer.invoke('recover', cid, apiKey);
     }
+  });
+
+  contextBridge.exposeInMainWorld('settings', {
+    setApiKey: null
   });
 });
