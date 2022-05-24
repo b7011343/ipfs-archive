@@ -1,8 +1,8 @@
-const { app, BrowserWindow, protocol, ipcMain } = require("electron");
+const { app, BrowserWindow, protocol, ipcMain } = require('electron');
 const { backup } = require('../src/service/backup');
 const { recover } = require('../src/service/recover');
-const path = require("path");
-const url = require("url");
+const path = require('path');
+const url = require('url');
 
 
 const createWindow = () => {

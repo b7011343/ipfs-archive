@@ -1,10 +1,10 @@
-const { contextBridge, ipcRenderer } = require("electron");
+const { contextBridge, ipcRenderer } = require('electron');
 
 
 process.once("loaded", () => {
-  contextBridge.exposeInMainWorld("versions", process.versions);
-  
-  contextBridge.exposeInMainWorld('control', {
+  contextBridge.exposeInMainWorld('versions', process.versions);
+
+  contextBridge.exposeInMainWorld('system', {
     minimize: () => ipcRenderer.invoke('min'),
     close: () => ipcRenderer.invoke('close')
   });
@@ -15,7 +15,7 @@ process.once("loaded", () => {
       ipcRenderer.invoke('backup');
     },
     recover: (cid) => {
-      console.log('Backup');
+      console.log('Recover');
       ipcRenderer.invoke('recover', undefined, cid);
     }
   });

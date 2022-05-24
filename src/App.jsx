@@ -59,10 +59,10 @@ const App = () => {
             <b>IPFS Archive</b>
           </Typography>
           <Toolbar sx={{ marginRight: '-24px' }}>
-            <IconButton title='Minimize the app' color="default" component="span" className='undraggable' onClick={() => window.control.minimize()}>
+            <IconButton title='Minimize the app' color="default" component="span" className='undraggable' onClick={() => window.system.minimize()}>
               <Minimize/>
             </IconButton>
-            <IconButton title='Close the app' color="default" component="span" className='undraggable' onClick={() => window.control.close()}>
+            <IconButton title='Close the app' color="default" component="span" className='undraggable' onClick={() => window.system.close()}>
               <Close/>
             </IconButton>
           </Toolbar>
