@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Typography, TextField, Button } from '@mui/material';
-const settings = require('electron-settings');
+import { Grid, Typography, TextField, Button, Alert, AlertTitle } from '@mui/material';
 
 
 export const Settings = () => {
   const [apiKey, setApiKey] = useState();
 
   useEffect(() => {
-    settings.get('apiKey').then((x) => setApiKey(x));
+    window.storage.get('apiKey').then((x) => setApiKey(x));
   }, []);
 
   console.log(apiKey)
@@ -23,17 +22,26 @@ export const Settings = () => {
         type='password'
         fullWidth
         size='small'
+        helperText='You can find your API key at web3.storage'
         value={apiKey}
         onChange={(e) => setApiKey(e.target.value)}
         sx={{ margin: '15px 0' }}
       />
-      <Button
-        variant='contained'
-        color='primary'
-        onClick={() => settings.setSync('apiKey', apiKey)}
-      >
-        Save
-      </Button>
+      <Alert severity='warning'>
+        <AlertTitle>Warning</AlertTitle>
+        Your API key will be used to encrypt data that is backed up. Should you wish
+        to recover any backup, you must assure this key has not changed since the backup
+        was performed.
+      </Alert>
+      <Grid mt={2} container justifyContent='flex-end'>
+        <Button
+          variant='contained'
+          color='primary'
+          onClick={() => window.storage.set('apiKey', apiKey)}
+        >
+          Save
+        </Button>
+      </Grid>
     </Grid>
   );
 };

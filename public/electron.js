@@ -1,9 +1,15 @@
 const { app, BrowserWindow, protocol, ipcMain, dialog } = require('electron');
-const { backup } = require('../src/service/backup');
-const { recover } = require('../src/service/recover');
+const Store = require('../src/utils/store');
+const { backup } = require('../src/services/backup');
+const { recover } = require('../src/services/recover');
 const path = require('path');
 const url = require('url');
 
+
+const store = new Store({
+  configName: 'ipfs-archive-user-data',
+  defaults: {}
+});
 
 const createWindow = () => {
   const mainWindow = new BrowserWindow({
@@ -22,13 +28,14 @@ const createWindow = () => {
   });
 
   mainWindow.setMenuBarVisibility(false);
-
   mainWindow.once('ready-to-show', () => mainWindow.show());
 
   ipcMain.handle('min', () => mainWindow.minimize());
   ipcMain.handle('close', () => app.quit());
-  ipcMain.handle('backup', (event) => backup());
-  ipcMain.handle('recover', (event, cid) => recover(cid));
+  ipcMain.handle('backup', (event, apiKey) => backup(apiKey));
+  ipcMain.handle('recover', (event, cid, apiKey) => recover(cid, apiKey));
+  ipcMain.handle('get', (event, key) => (store.get(key)));
+  ipcMain.handle('set', (event, key, val) => store.set(key, val));
 
   ipcMain.handle('select-dirs', async (event, arg) => {
     const result = await dialog.showOpenDialog(mainWindow, {
@@ -107,3 +114,5 @@ app.on("web-contents-created", (event, contents) => {
     }
   });
 });
+
+exports.store = store;

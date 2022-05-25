@@ -4,7 +4,6 @@ const fs = require('fs');
 const archiver = require('archiver');
 const { Web3Storage, getFilesFromPath } = require('web3.storage');
 const crypto = require('crypto');
-const settings = require('electron-settings');
  
 
 let apiKey;
@@ -71,8 +70,8 @@ const _backup = async (dir) => {
   console.log(cid);
 };
 
-const backup = async () => {
-  apiKey = await settings.get('apiKey');
+const backup = async (_apiKey) => {
+  apiKey = _apiKey;
   console.log('key', apiKey);
   storageClient = new Web3Storage({ token: apiKey });
   console.log('Starting backup');

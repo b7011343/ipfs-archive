@@ -14,17 +14,18 @@ process.once("loaded", () => {
   });
 
   contextBridge.exposeInMainWorld('service', {
-    backup: () => {
+    backup: (apiKey) => {
       console.log('Backup');
-      ipcRenderer.invoke('backup');
+      ipcRenderer.invoke('backup', apiKey);
     },
-    recover: (cid) => {
+    recover: (cid, apiKey) => {
       console.log('Recover');
-      ipcRenderer.invoke('recover', cid);
+      ipcRenderer.invoke('recover', cid, apiKey);
     }
   });
 
-  contextBridge.exposeInMainWorld('settings', {
-    setApiKey: null
+  contextBridge.exposeInMainWorld('storage', {
+    get: (key) => ipcRenderer.invoke('get', key),
+    set: (key, val) => ipcRenderer.invoke('set', key, val)
   });
 });
