@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Grid, Typography, TextField, Button } from '@mui/material';
+const settings = require('electron-settings');
 
 
 export const Settings = () => {
-  const [apiKey, setApiKey] = useState(localStorage.getItem('apiKey'));
+  const [apiKey, setApiKey] = useState();
 
   useEffect(() => {
-    localStorage.apiKey = apiKey;
-  }, [apiKey]);
+    settings.get('apiKey').then((x) => setApiKey(x));
+  }, []);
 
   console.log(apiKey)
 
@@ -26,7 +27,11 @@ export const Settings = () => {
         onChange={(e) => setApiKey(e.target.value)}
         sx={{ margin: '15px 0' }}
       />
-      <Button variant='contained' color='primary' onClick={() => localStorage.apiKey = apiKey}>
+      <Button
+        variant='contained'
+        color='primary'
+        onClick={() => settings.setSync('apiKey', apiKey)}
+      >
         Save
       </Button>
     </Grid>

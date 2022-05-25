@@ -14,13 +14,13 @@ process.once("loaded", () => {
   });
 
   contextBridge.exposeInMainWorld('service', {
-    backup: (apiKey) => {
-      console.log('Backup', apiKey);
-      ipcRenderer.invoke('backup', apiKey);
+    backup: () => {
+      console.log('Backup');
+      ipcRenderer.invoke('backup');
     },
-    recover: (cid, apiKey) => {
+    recover: (cid) => {
       console.log('Recover');
-      ipcRenderer.invoke('recover', cid, apiKey);
+      ipcRenderer.invoke('recover', cid);
     }
   });
 

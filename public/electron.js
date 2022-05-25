@@ -11,7 +11,8 @@ const createWindow = () => {
     height: 700,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
-      nodeIntegration: true
+      nodeIntegration: true,
+      enableRemoteModule: true
     },
     show: false,
     fullscreenable: false,
@@ -26,8 +27,8 @@ const createWindow = () => {
 
   ipcMain.handle('min', () => mainWindow.minimize());
   ipcMain.handle('close', () => app.quit());
-  ipcMain.handle('backup', (event, apiKey) => backup(apiKey));
-  ipcMain.handle('recover', (event, cid, apiKey) => recover(cid, apiKey));
+  ipcMain.handle('backup', (event) => backup());
+  ipcMain.handle('recover', (event, cid) => recover(cid));
 
   ipcMain.handle('select-dirs', async (event, arg) => {
     const result = await dialog.showOpenDialog(mainWindow, {

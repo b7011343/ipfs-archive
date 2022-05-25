@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Grid, Box, TextField, FormControl, Button, Divider, OutlinedInput, InputAdornment, IconButton, InputLabel, FormHelperText } from '@mui/material';
 import { DriveFileMove } from '@mui/icons-material';
+const settings = require('electron-settings');
 
 
 export const Recover = () => {
-  const [recoverPath, setRecoverPath] = useState(localStorage.getItem('recoverPath'));
+  const [recoverPath, setRecoverPath] = useState();
 
   useEffect(() => {
-    localStorage.recoverPath = recoverPath;
+    settings.get('recoverPath').then((x) => setRecoverPath(x));
+  }, []);
+
+  useEffect(() => {
+    settings.setSync('recoverPath', recoverPath);
   }, [recoverPath]);
 
   return (
