@@ -18,7 +18,6 @@ const createWindow = () => {
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       nodeIntegration: true,
-      enableRemoteModule: true
     },
     show: false,
     fullscreenable: false,
@@ -30,20 +29,42 @@ const createWindow = () => {
   mainWindow.setMenuBarVisibility(false);
   mainWindow.once('ready-to-show', () => mainWindow.show());
 
+  mainWindow.webContents.on('crashed', (e) => {
+    console.error(e);
+    app.relaunch();
+    app.quit()
+});
+
+  // Window control
   ipcMain.handle('min', () => mainWindow.minimize());
   ipcMain.handle('close', () => app.quit());
+
+  // App functions
   ipcMain.handle('backup', (event, apiKey) => backup(apiKey));
   ipcMain.handle('recover', (event, cid, apiKey) => recover(cid, apiKey));
+
+  // Storage
   ipcMain.handle('get', (event, key) => (store.get(key)));
   ipcMain.handle('set', (event, key, val) => store.set(key, val));
 
+  // Directory dialog
   ipcMain.handle('select-dirs', async (event, arg) => {
     const result = await dialog.showOpenDialog(mainWindow, {
       properties: ['openDirectory']
     });
     const dir = result.filePaths[0];
     return dir;
-  })
+  });
+
+  // ipcMain.on('anything-asynchronous', (event, arg) => {
+  //   //execute tasks on behalf of renderer process 
+  //       console.log(arg) // prints "ping"
+  //   })
+    
+  //   // renderer process(react-component/App.js)
+  //   const { ipcRenderer } = require('electron')
+      
+  //   ipcRenderer.send('anything-asynchronous', 'ping')
   
   // In production, set the initial browser path to the local bundle generated
   // by the Create React App build process.
@@ -105,7 +126,7 @@ app.on("window-all-closed", () => {
 // If your app has no need to navigate or only needs to navigate to known pages,
 // it is a good idea to limit navigation outright to that known scope,
 // disallowing any other kinds of navigation.
-const allowedNavigationDestinations = "https://my-electron-app.com";
+const allowedNavigationDestinations = [];
 app.on("web-contents-created", (event, contents) => {
   contents.on("will-navigate", (event, navigationUrl) => {
     const parsedUrl = new URL(navigationUrl);
@@ -114,5 +135,7 @@ app.on("web-contents-created", (event, contents) => {
     }
   });
 });
+
+app.on('renderer-process-crashed', (event, webContents, killed) => console.log('CRASH REPORT LOG', event, webContents, killed));
 
 exports.store = store;

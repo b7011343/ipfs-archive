@@ -3,28 +3,29 @@ import { Grid, Box, TextField, FormControl, Button, Divider, OutlinedInput, Inpu
 import { DriveFileMove } from '@mui/icons-material';
 
 
+
 export const Recover = () => {
+  const [cid, setCid] = useState('');
   const [recoverPath, setRecoverPath] = useState();
 
   useEffect(() => {
     window.storage.get('recoverPath').then((x) => setRecoverPath(x));
   }, []);
 
-  useEffect(() => {
-    window.storage.set('recoverPath', recoverPath);
-  }, [recoverPath]);
+  const handleChangeCid = (e) => setCid(e.target.value);
 
   return (
     <Grid container p={20} pt={24} justifyContent='center' alignItems='center'>
       <Box>
         <FormControl>
-          <TextField size='small' autoFocus label='Backup CID' helperText='You can find your latest backup CIDs on web3.storage' />
+          <TextField size='small' autoFocus value={cid} onChange={handleChangeCid} label='Backup CID' helperText='You can find your latest backup CIDs on web3.storage' />
           <FormControl title={recoverPath} variant='outlined' sx={{ marginTop: '20px' }}>
             <InputLabel title={recoverPath} htmlFor="file-path" sx={{ marginTop: '-6px' }}>Destination Path</InputLabel>
             <OutlinedInput
               id='file-path'
               label='Destination Path'
               disabled
+              autoFocus
               title={recoverPath}
               value={recoverPath}
               size='small'
@@ -35,6 +36,7 @@ export const Recover = () => {
                       window.system.openRecoverDirDialog().then((dir) => {
                         console.log(dir)
                         setRecoverPath(dir);
+                        window.storage.set('recoverPath', dir);
                       });
                     }}
                     edge="end"
@@ -49,7 +51,14 @@ export const Recover = () => {
             </FormHelperText>
           </FormControl>
           <Divider sx={{ width: '100%', margin: '10px 0px' }}/>
-          <Button size='small' variant='outlined' color='primary' onClick={null}>
+          <Button
+            size='small'
+            variant='outlined'
+            color='primary'
+            onClick={() => {
+              window.storage.get('apiKey').then((apiKey) => window.service.recover(cid, apiKey));
+            }}
+          >
             Start Recovery
           </Button>
         </FormControl>

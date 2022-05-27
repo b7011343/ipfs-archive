@@ -41,9 +41,8 @@ export const Backup = () => {
               <Button
                 size='small'
                 variant='contained'
-                onClick={async () => {
-                  const apiKey = await window.storage.get('apiKey');
-                  window.service.backup(apiKey);
+                onClick={() => {
+                  window.storage.get('apiKey').then((apiKey) => window.service.backup(apiKey));
                 }}
               >
                 Start Backup

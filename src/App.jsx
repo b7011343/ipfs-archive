@@ -6,7 +6,7 @@ import { Drawer, Box, AppBar as MuiAppBar, Toolbar, Typography, Divider, IconBut
 import { Close, Minimize } from '@mui/icons-material';
 import { NavMenu } from './components';
 import routes from './resources/routes';
-import logo from './icon.png';
+import logo from './resources/images/icon.png';
 
 
 const drawerWidth = 160;

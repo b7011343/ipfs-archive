@@ -13,9 +13,7 @@ root.render(
   <ThemeProvider theme={theme}>
     <HashRouter>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <React.StrictMode>
-          <App />
-        </React.StrictMode>
+        <App />
       </LocalizationProvider>
     </HashRouter>
   </ThemeProvider>

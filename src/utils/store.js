@@ -29,7 +29,11 @@ class Store {
     // We're not writing a server so there's not nearly the same IO demand on the process
     // Also if we used an async API and our app was quit before the asynchronous write had a chance to complete,
     // we might lose that data. Note that in a real app, we would try/catch this.
-    fs.writeFileSync(this.path, JSON.stringify(this.data));
+    try {
+      fs.writeFileSync(this.path, JSON.stringify(this.data));
+    } catch (err) {
+      console.error(err);
+    }
   }
 }
 
@@ -38,8 +42,9 @@ function parseDataFile(filePath, defaults) {
   // `fs.readFileSync` will return a JSON string which we then parse into a Javascript object
   try {
     return JSON.parse(fs.readFileSync(filePath));
-  } catch(error) {
+  } catch(err) {
     // if there was some kind of error, return the passed in defaults instead.
+    console.error(err);
     return defaults;
   }
 }
