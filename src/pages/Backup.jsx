@@ -1,13 +1,36 @@
-import React, { useState } from 'react';
-import { Grid, Button, Typography, Paper, Divider, FormControlLabel, Checkbox, TextField, FormGroup } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Grid, Button, Typography, Paper, Divider, FormControlLabel, Checkbox, TextField, FormGroup,
+         List, ListItemButton, ListItemIcon, ListItemText, IconButton, Stack } from '@mui/material';
+import { DeleteOutline, AddBox } from '@mui/icons-material';
+import { styled } from '@mui/material/styles';
 import { DesktopTimePicker } from '@mui/x-date-pickers';
 import { LinearProgressWithLabel } from '../components';
 
 
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: 'center',
+  color: theme.palette.text.secondary,
+}));
+
 export const Backup = () => {
   const [backupEnabled, setBackupEnabled] = useState(false);
   const [backupTime, setBackupTime] = useState(new Date());
+  const [backupDirList, setBackupDirList] = useState([]);
+
   const handleChange = (e) => setBackupEnabled(e.target.checked);
+  const addDir = (dir) => setBackupDirList([...backupDirList, dir]);
+  const removeDir = (dir) => setBackupDirList(backupDirList.filter((x) => x !== dir ));
+
+  useEffect(() => {
+    window.storage.get('backupDirList').then((x) => x && setBackupDirList(x));
+  }, []);
+
+  useEffect(() => {
+    window.storage.set('backupDirList', backupDirList);
+  }, [backupDirList]);
   
   return (
     <Grid container flexDirection='column'>
@@ -63,8 +86,39 @@ export const Backup = () => {
           </Grid>
         </Grid>
       </Grid>
-      <Grid item container xs={12}>
-
+      <Grid item container xs={12} mt={2} sx={{ width: '100%' }} flexDirection='column'>
+        <Typography gutterBottom variatnt='h8'>Backed Up Directories</Typography>
+        <Stack spacing={1} sx={{ height: '230px', overflowY: 'scroll', paddingRight: '5px' }}>
+          {backupDirList && backupDirList.length > 0 ? backupDirList.map((x, i) => (
+            <Item key={i}>
+              {x}
+              <IconButton
+                color='default'
+                onClick={() => removeDir(x)}
+              >
+                <DeleteOutline/>
+              </IconButton>
+            </Item>
+          )) : (
+           <Item>
+              No directories
+           </Item>
+          )}
+        </Stack>
+        <Item sx={{ marginTop: '10px' }}>
+          <Button
+            size='small'
+            startIcon={<AddBox/>}
+            variant='contained'
+            onClick={() => {
+              window.system.openRecoverDirDialog().then((x) => {
+                addDir(x);
+              });
+            }}
+          >
+            Add
+          </Button>
+        </Item>
       </Grid>
     </Grid>
   );
