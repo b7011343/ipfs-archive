@@ -18,9 +18,9 @@ process.once("loaded", () => {
       console.log('Backup');
       ipcRenderer.invoke('backup', apiKey);
     },
-    recover: (cid, apiKey) => {
+    recover: (cid, destDir, apiKey) => {
       console.log('Recover');
-      ipcRenderer.invoke('recover', cid, apiKey);
+      ipcRenderer.invoke('recover', cid, destDir, apiKey);
     }
   });
 

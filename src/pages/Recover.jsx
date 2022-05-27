@@ -56,7 +56,7 @@ export const Recover = () => {
             variant='outlined'
             color='primary'
             onClick={() => {
-              window.storage.get('apiKey').then((apiKey) => window.service.recover(cid, apiKey));
+              window.storage.get('apiKey').then((apiKey) => window.service.recover(cid, recoverPath, apiKey));
             }}
           >
             Start Recovery
