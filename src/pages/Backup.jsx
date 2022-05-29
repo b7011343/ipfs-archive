@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Grid, Button, Typography, Paper, Divider, FormControlLabel, Checkbox, TextField, FormGroup,
-         List, ListItemButton, ListItemIcon, ListItemText, IconButton, Stack } from '@mui/material';
+         Card, CardActions, CardHeader, CardContent, IconButton, Stack } from '@mui/material';
 import { DeleteOutline, AddBox } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import { DesktopTimePicker } from '@mui/x-date-pickers';
@@ -64,6 +64,7 @@ export const Backup = () => {
               <Button
                 size='small'
                 variant='contained'
+                disabled={backupDirList.length < 1}
                 onClick={() => {
                   window.storage.get('apiKey').then((apiKey) => window.service.backup(apiKey));
                 }}
@@ -86,39 +87,44 @@ export const Backup = () => {
           </Grid>
         </Grid>
       </Grid>
-      <Grid item container xs={12} mt={2} sx={{ width: '100%' }} flexDirection='column'>
-        <Typography gutterBottom variatnt='h8'>Backed Up Directories</Typography>
-        <Stack spacing={1} sx={{ height: '230px', overflowY: 'scroll', paddingRight: '5px' }}>
-          {backupDirList && backupDirList.length > 0 ? backupDirList.map((x, i) => (
-            <Item key={i}>
-              {x}
-              <IconButton
-                color='default'
-                onClick={() => removeDir(x)}
-              >
-                <DeleteOutline/>
-              </IconButton>
-            </Item>
-          )) : (
-           <Item>
-              No directories
-           </Item>
-          )}
-        </Stack>
-        <Item sx={{ marginTop: '10px' }}>
-          <Button
-            size='small'
-            startIcon={<AddBox/>}
-            variant='contained'
-            onClick={() => {
-              window.system.openRecoverDirDialog().then((x) => {
-                addDir(x);
-              });
-            }}
-          >
-            Add
-          </Button>
-        </Item>
+      <Grid item container xs={12} mt={2} sx={{ width: '100%', maxHeight: '325px' }} flexDirection='column'>
+        <Card>
+          <CardContent sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', paddingBottom: '0' }}>
+            <Typography gutterBottom sx={{ marginBottom: '10px' }}>Backed Up Directories</Typography>
+            <Stack spacing={1} sx={{ maxHeight: '225px', height: 'auto', width: '100%', overflowY: 'auto', padding: '0 5px' }}>
+              {backupDirList && backupDirList.length > 0 ? backupDirList.map((x, i) => (
+                <Item key={i}>
+                  {x}
+                  <IconButton
+                    color='default'
+                    onClick={() => removeDir(x)}
+                  >
+                    <DeleteOutline/>
+                  </IconButton>
+                </Item>
+              )) : (
+              <Item>
+                  No directories
+              </Item>
+              )}
+            </Stack>
+          </CardContent>
+          <CardActions sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Button
+              size='small'
+              startIcon={<AddBox/>}
+              variant='contained'
+              color='inherit'
+              onClick={() => {
+                window.system.openRecoverDirDialog().then((x) => {
+                  addDir(x);
+                });
+              }}
+            >
+              Add
+            </Button>
+          </CardActions>
+        </Card>
       </Grid>
     </Grid>
   );

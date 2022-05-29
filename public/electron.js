@@ -1,4 +1,4 @@
-const { app, BrowserWindow, protocol, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, protocol, ipcMain, dialog, crashReporter } = require('electron');
 const Store = require('../src/utils/store');
 const { backup } = require('../src/services/backup');
 const { recover } = require('../src/services/recover');
@@ -29,12 +29,6 @@ const createWindow = () => {
   mainWindow.setMenuBarVisibility(false);
   mainWindow.once('ready-to-show', () => mainWindow.show());
 
-  mainWindow.webContents.on('crashed', (e) => {
-    console.error(e);
-    app.relaunch();
-    app.quit()
-});
-
   // Window control
   ipcMain.handle('min', () => mainWindow.minimize());
   ipcMain.handle('close', () => app.quit());
@@ -56,15 +50,22 @@ const createWindow = () => {
     return dir;
   });
 
+  mainWindow.webContents.on('plugin-crashed', (_ev, name, version) => console.error(_ev, name, version));
+  mainWindow.webContents.on('crashed', (ev, killed) => console.error(ev, killed));
+
+  // Log crashes
+  crashReporter.start({ submitURL: '', uploadToServer: false });
+  console.log(app.getPath('crashDumps'));
+  console.log(app.getPath('temp'));
+
   // ipcMain.on('anything-asynchronous', (event, arg) => {
   //   //execute tasks on behalf of renderer process 
   //       console.log(arg) // prints "ping"
   //   })
-    
   //   // renderer process(react-component/App.js)
   //   const { ipcRenderer } = require('electron')
-      
   //   ipcRenderer.send('anything-asynchronous', 'ping')
+
   
   // In production, set the initial browser path to the local bundle generated
   // by the Create React App build process.
@@ -136,6 +137,9 @@ app.on("web-contents-created", (event, contents) => {
   });
 });
 
-app.on('renderer-process-crashed', (event, webContents, killed) => console.log('CRASH REPORT LOG', event, webContents, killed));
+app.on('gpu-process-crashed', (_event, killed) => console.error(_event, killed));
+app.on('renderer-process-crashed', (_e, _w, killed) => console.error(_e, _w, killed));
+
+app.setPath('temp', 'C:/Users/jwhit/AppData/Local/Temp/ipfs-archive')
 
 exports.store = store;
