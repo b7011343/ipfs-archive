@@ -5,6 +5,7 @@ const { recover } = require('../src/services/recover');
 const path = require('path');
 const url = require('url');
 
+let mainWindow;
 
 const store = new Store({
   configName: 'ipfs-archive-user-data',
@@ -12,7 +13,7 @@ const store = new Store({
 });
 
 const createWindow = () => {
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 850,
     height: 700,
     webPreferences: {
@@ -34,8 +35,8 @@ const createWindow = () => {
   ipcMain.handle('close', () => app.quit());
 
   // App functions
-  ipcMain.handle('backup', (event, apiKey) => backup(apiKey));
-  ipcMain.handle('recover', (event, cid, destDir, apiKey) => recover(cid, destDir, apiKey));
+  ipcMain.handle('backup', (event, apiKey) => backup(apiKey, mainWindow));
+  ipcMain.handle('recover', (event, cid, destDir, apiKey) => recover(cid, destDir, apiKey, mainWindow));
 
   // Storage
   ipcMain.handle('get', (event, key) => (store.get(key)));
@@ -140,6 +141,10 @@ app.on("web-contents-created", (event, contents) => {
 app.on('gpu-process-crashed', (_event, killed) => console.error(_event, killed));
 app.on('renderer-process-crashed', (_e, _w, killed) => console.error(_e, _w, killed));
 
-app.setPath('temp', 'C:/Users/jwhit/AppData/Local/Temp/ipfs-archive')
+const backupUpdate = (message) => {
+  mainWindow.webContents.send('backup-update', message);
+  setTimeout(() => mainWindow.webContents.send('backup-updated'));
+};
 
 exports.store = store;
+exports.sendRenderer = backupUpdate;

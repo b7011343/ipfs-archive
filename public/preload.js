@@ -28,4 +28,10 @@ process.once("loaded", () => {
     get: (key) => ipcRenderer.invoke('get', key),
     set: (key, val) => ipcRenderer.invoke('set', key, val)
   });
+
+  ipcRenderer.on('backup-update', (evt, message) => {
+    const currentLog = ipcRenderer.invoke('get', 'backupLog');
+    ipcRenderer.invoke('set', currentLog || [message]);
+    console.log(message);
+  });
 });

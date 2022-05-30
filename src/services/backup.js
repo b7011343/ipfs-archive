@@ -4,10 +4,12 @@ const fs = require('fs');
 const archiver = require('archiver');
 const { Web3Storage, getFilesFromPath } = require('web3.storage');
 const crypto = require('crypto');
- 
+const { backupUpdate } = require('../utils/helpers');
+
 
 let apiKey;
 let storageClient;
+let mainWindow;
 
 const dirs = [
   "D:\\Bandicam"
@@ -70,8 +72,9 @@ const _backup = async (dir) => {
   console.log(cid);
 };
 
-const backup = async (_apiKey) => {
+const backup = async (_apiKey, _mainWindow) => {
   apiKey = _apiKey;
+  mainWindow = _mainWindow;
   console.log('key', apiKey);
   storageClient = new Web3Storage({ token: apiKey });
   console.log('Starting backup');
