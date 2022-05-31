@@ -5,11 +5,11 @@ const archiver = require('archiver');
 const { Web3Storage, getFilesFromPath } = require('web3.storage');
 const crypto = require('crypto');
 const { backupUpdate } = require('../utils/helpers');
+const { store } = require('../utils/store');
 
 
 let apiKey;
 let storageClient;
-let mainWindow;
 
 const dirs = [
   "D:\\Bandicam"
@@ -27,11 +27,13 @@ const uploadIPFS = async (filePath) => {
   console.log(file)
   const cid = await storageClient.put(file);
   console.log('Content added with CID:', cid);
+  backupUpdate(store, `Data added to IPFS with CID: ${cid}`);
   return cid;
 };
 
 const compress = async (dir) => {
   console.log(`Compressing ${dir}`);
+  backupUpdate(store, `Compressing ${dir}`);
   const destinationDir = getDestinationDir();
   const outputStream = fs.createWriteStream(destinationDir);
   const archive = archiver('zip', { zlib: { level: 9 }});
@@ -47,6 +49,7 @@ const compress = async (dir) => {
 
 const encrypt = async (dir) => {
   console.log(`Encrypting ${dir}`);
+  backupUpdate(store, `Encrypting ${dir}`);
   const destinationDir = `./aes-${dir.substring(2, dir.length)}`;
   return new Promise((resolve, reject) => {
     const compressedDirReadStream = fs.createReadStream(dir, { encoding: 'base64' });
@@ -64,24 +67,28 @@ const encrypt = async (dir) => {
 
 const _backup = async (dir) => {
   console.log(`Backing up ${dir}`);
+  backupUpdate(store, `Backing up ${dir}`);
   const compressedDir = await compress(dir);
   console.log('-----Compressed', compressedDir)
+  backupUpdate(store, `Compressed ${dir}`);
   const encryptedZipFile = await encrypt(compressedDir);
-  console.log('-----Encrypted', encryptedZipFile)
+  console.log('-----Encrypted', encryptedZipFile);
+  backupUpdate(store, `Encrypted ${dir}`);
   const cid = await uploadIPFS(encryptedZipFile, compressedDir);
   console.log(cid);
 };
 
 const backup = async (_apiKey, _mainWindow) => {
   apiKey = _apiKey;
-  mainWindow = _mainWindow;
   console.log('key', apiKey);
   storageClient = new Web3Storage({ token: apiKey });
   console.log('Starting backup');
+  backupUpdate(store, 'Starting backup');
   for (const dir of dirs) {
     await _backup(dir);
   }
   console.log('Backup complete');
+  backupUpdate(store, 'Backup complete');
 };
 
 exports.backup = backup;

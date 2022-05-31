@@ -49,5 +49,9 @@ function parseDataFile(filePath, defaults) {
   }
 }
 
-// expose the class
-module.exports = Store;
+const store = new Store({
+  configName: 'ipfs-archive-user-data',
+  defaults: {}
+});
+
+exports.store = store;

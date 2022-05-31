@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Grid, Button, Typography, Paper, Divider, FormControlLabel, Checkbox, TextField, FormGroup,
-         Card, CardActions, CardHeader, CardContent, IconButton, Stack } from '@mui/material';
+         Card, CardActions, CardContent, IconButton, Stack, List, ListItem, ListItemText, ListItemIcon } from '@mui/material';
 import { DeleteOutline, AddBox } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import { DesktopTimePicker } from '@mui/x-date-pickers';
@@ -19,6 +19,8 @@ export const Backup = () => {
   const [backupEnabled, setBackupEnabled] = useState(false);
   const [backupTime, setBackupTime] = useState(new Date());
   const [backupDirList, setBackupDirList] = useState([]);
+  const [backupLog, setBackLog] = useState([]);
+  const logRef = useRef(null);
 
   const handleChange = (e) => setBackupEnabled(e.target.checked);
   const addDir = (dir) => setBackupDirList([...backupDirList, dir]);
@@ -31,6 +33,15 @@ export const Backup = () => {
   useEffect(() => {
     window.storage.set('backupDirList', backupDirList);
   }, [backupDirList]);
+
+  useEffect(() => {
+    window.storage.get('backupLog').then((x) => setBackLog(x || []));
+    const interval = setInterval(() => {
+      console.log('Update backup log')
+      window.storage.get('backupLog').then((x) => setBackLog(x || []));
+    }, 20000);
+    return () => clearInterval(interval)
+  }, []);
   
   return (
     <Grid container flexDirection='column'>
@@ -66,6 +77,8 @@ export const Backup = () => {
                 variant='contained'
                 disabled={backupDirList.length < 1}
                 onClick={() => {
+                  window.storage.set('backupLog', []);
+                  setBackLog([]);
                   window.storage.get('apiKey').then((apiKey) => window.service.backup(apiKey));
                 }}
               >
@@ -74,15 +87,22 @@ export const Backup = () => {
             </Grid>
           </Grid>
           <Grid item container mt={2}>
-            <Paper sx={{ width: '100%', padding: '10px', height: '195px' }}>
-              <TextField
-                multiline
-                label='Backup Terminal'
-                value='16:02 : Backup initialised'
-                size='small'
-                rows={7}
-                sx={{ width: '100%', height: '100%' }}
-              />
+            <Paper variant='outlined' ref={logRef} sx={{ width: '100%', padding: '10px', height: '195px', overflow: 'auto' }}>
+              <Typography variant='h8' gutterBottom sx={{ marginLeft: '10px' }}>
+                Backup Log
+              </Typography>
+              <List dense>
+                {backupLog && backupLog.map((x) => (
+                  <ListItem>
+                    <ListItemIcon>
+                      <b>{'>_'}</b>
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={x}
+                    />
+                  </ListItem>
+                ))}
+              </List>
             </Paper>
           </Grid>
         </Grid>

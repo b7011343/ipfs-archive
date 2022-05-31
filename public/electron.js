@@ -1,16 +1,12 @@
 const { app, BrowserWindow, protocol, ipcMain, dialog, crashReporter } = require('electron');
-const Store = require('../src/utils/store');
+const { store } = require('../src/utils/store');
 const { backup } = require('../src/services/backup');
 const { recover } = require('../src/services/recover');
 const path = require('path');
 const url = require('url');
 
-let mainWindow;
 
-const store = new Store({
-  configName: 'ipfs-archive-user-data',
-  defaults: {}
-});
+let mainWindow;
 
 const createWindow = () => {
   mainWindow = new BrowserWindow({
@@ -59,15 +55,6 @@ const createWindow = () => {
   console.log(app.getPath('crashDumps'));
   console.log(app.getPath('temp'));
 
-  // ipcMain.on('anything-asynchronous', (event, arg) => {
-  //   //execute tasks on behalf of renderer process 
-  //       console.log(arg) // prints "ping"
-  //   })
-  //   // renderer process(react-component/App.js)
-  //   const { ipcRenderer } = require('electron')
-  //   ipcRenderer.send('anything-asynchronous', 'ping')
-
-  
   // In production, set the initial browser path to the local bundle generated
   // by the Create React App build process.
   // In development, set it to localhost to allow live/hot-reloading.
@@ -141,10 +128,4 @@ app.on("web-contents-created", (event, contents) => {
 app.on('gpu-process-crashed', (_event, killed) => console.error(_event, killed));
 app.on('renderer-process-crashed', (_e, _w, killed) => console.error(_e, _w, killed));
 
-const backupUpdate = (message) => {
-  mainWindow.webContents.send('backup-update', message);
-  setTimeout(() => mainWindow.webContents.send('backup-updated'));
-};
-
 exports.store = store;
-exports.sendRenderer = backupUpdate;
