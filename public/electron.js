@@ -50,6 +50,9 @@ const createWindow = () => {
   mainWindow.webContents.on('plugin-crashed', (_ev, name, version) => console.error(_ev, name, version));
   mainWindow.webContents.on('crashed', (ev, killed) => console.error(ev, killed));
 
+  store.set('backup', false);
+  store.set('recover', false);
+
   // Log crashes
   crashReporter.start({ submitURL: '', uploadToServer: false });
   console.log(app.getPath('crashDumps'));

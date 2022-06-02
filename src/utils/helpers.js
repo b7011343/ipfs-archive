@@ -5,4 +5,11 @@ const backupUpdate = (store, message) => {
   console.log(newLog);
 };
 
+const updateBackupStatus = (store, status) => {
+  const { message, progress } = status;
+  store.set('backupStatusMessage', message);
+  store.set('backupProgress', progress);
+};
+
 exports.backupUpdate = backupUpdate;
+exports.updateBackupStatus = updateBackupStatus;

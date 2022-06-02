@@ -17,10 +17,12 @@ const Item = styled(Paper)(({ theme }) => ({
 
 export const Backup = () => {
   const [backupEnabled, setBackupEnabled] = useState(false);
+  const [backupActive, setBackupActive] = useState(false);
   const [backupTime, setBackupTime] = useState(new Date());
   const [backupDirList, setBackupDirList] = useState([]);
   const [backupLog, setBackupLog] = useState([]);
-  const logRef = useRef(null);
+  const [backupProgress, setBackupProgress] = useState(0);
+  const [backupStatus, setBackupStatus] = useState('');
 
   const handleChange = (e) => setBackupEnabled(e.target.checked);
   const addDir = (dir) => setBackupDirList([...backupDirList, dir]);
@@ -36,11 +38,18 @@ export const Backup = () => {
 
   useEffect(() => {
     window.storage.get('backupLog').then((x) => setBackupLog(x || []));
+    window.storage.get('backup').then((x) => setBackupActive(x || false));
+    window.storage.get('backupProgress').then((x) => setBackupProgress(x || 0));
+    window.storage.get('backupStatusMessage').then((x) => setBackupStatus(x || ''));
+
     const interval = setInterval(() => {
       console.log('Update backup log')
       window.storage.get('backupLog').then((x) => setBackupLog(x || []));
-    }, 20000);
-    return () => clearInterval(interval)
+      window.storage.get('backup').then((x) => setBackupActive(x || false));
+      window.storage.get('backupProgress').then((x) => setBackupProgress(x || 0));
+      window.storage.get('backupStatusMessage').then((x) => setBackupStatus(x || ''));
+    }, 10000);
+    return () => clearInterval(interval);
   }, []);
   
   return (
@@ -67,15 +76,15 @@ export const Backup = () => {
           <Grid item container flexDirection='row'>
             <Grid item container xs={7} flexDirection='column'>
               <Typography variant='body2' gutterBottom>
-                <b>Status:</b> Backup in progress
+                <b>Status:</b> {backupStatus}
               </Typography>
-              <LinearProgressWithLabel value={20} />
+              <LinearProgressWithLabel value={backupProgress} />
             </Grid>
             <Grid item container xs={5} justifyContent='flex-end'>
               <Button
                 size='small'
                 variant='contained'
-                disabled={backupDirList.length < 1}
+                disabled={backupDirList.length < 1 || backupActive}
                 onClick={() => {
                   window.storage.set('backupLog', []);
                   setBackupLog([]);
@@ -87,13 +96,13 @@ export const Backup = () => {
             </Grid>
           </Grid>
           <Grid item container mt={2}>
-            <Paper variant='outlined' ref={logRef} sx={{ width: '100%', padding: '10px', height: '195px', overflow: 'auto' }}>
+            <Paper variant='outlined' sx={{ width: '100%', padding: '10px', height: '195px', overflow: 'auto' }}>
               <Typography variant='h8' gutterBottom sx={{ marginLeft: '10px' }}>
                 Backup Log
               </Typography>
               <List dense>
                 {backupLog && backupLog.map((x) => (
-                  <ListItem>
+                  <ListItem sx={{ paddingTop: '0', paddingBottom: '0' }}>
                     <ListItemIcon>
                       <b>{'>_'}</b>
                     </ListItemIcon>

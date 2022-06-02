@@ -4,8 +4,9 @@ const fs = require('fs');
 const archiver = require('archiver');
 const { Web3Storage, getFilesFromPath } = require('web3.storage');
 const crypto = require('crypto');
-const { backupUpdate } = require('../utils/helpers');
+const { backupUpdate, updateBackupStatus } = require('../utils/helpers');
 const { store } = require('../utils/store');
+const { STARTED, COMPRESSING, ENCRYPTING, UPLOADING, COMPLETE } = require('../resources/backupStatus.json');
 
 
 let apiKey;
@@ -13,9 +14,14 @@ let storageClient;
 
 const getDestinationDir = () => (`./${uuid()}.zip`);
 
-// eslint-disable-next-line no-unused-vars
-const cleanupTempFiles = () => {
-
+const cleanupTempFiles = (files) => {
+  console.log('Cleaning up temp files')
+  for (const file of files) {
+    fs.unlink(file, (err) => {
+      if (err) throw err;
+      console.log(`${file} deleted`);
+    });
+  }
 };
 
 const uploadIPFS = async (filePath) => {
@@ -65,19 +71,25 @@ const encrypt = async (dir) => {
 const _backup = async (dir) => {
   console.log(`Backing up ${dir}`);
   backupUpdate(store, `Backing up ${dir}`);
+  updateBackupStatus(store, COMPRESSING);
   const compressedDir = await compress(dir);
   console.log('-----Compressed', compressedDir)
   backupUpdate(store, `Compressed ${dir}`);
+  updateBackupStatus(store, ENCRYPTING);
   const encryptedZipFile = await encrypt(compressedDir);
   console.log('-----Encrypted', encryptedZipFile);
   backupUpdate(store, `Encrypted ${dir}`);
+  updateBackupStatus(store, UPLOADING);
   const cid = await uploadIPFS(encryptedZipFile, compressedDir);
   console.log(cid);
+  cleanupTempFiles([compressedDir, encryptedZipFile]);
 };
 
 const backup = async (_apiKey, backupDirList) => {
   apiKey = _apiKey;
+  store.set('backup', true);
   console.log('key', apiKey);
+  updateBackupStatus(store, STARTED);
   storageClient = new Web3Storage({ token: apiKey });
   console.log('Starting backup');
   backupUpdate(store, 'Starting backup');
@@ -86,6 +98,8 @@ const backup = async (_apiKey, backupDirList) => {
   }
   console.log('Backup complete');
   backupUpdate(store, 'Backup complete');
+  store.set('backup', false);
+  updateBackupStatus(store, COMPLETE);
 };
 
 exports.backup = backup;

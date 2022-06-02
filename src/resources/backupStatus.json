@@ -1,0 +1,23 @@
+{
+    "STARTED": {
+        "progress": 0,
+        "message": "Backup started"
+    },
+    "COMPRESSING": {
+        "progress": 20,
+        "message": "Compressing data"
+    },
+    "ENCRYPTING": {
+        "progress": 40,
+        "message": "Encrypting data"
+
+    },
+    "UPLOADING": {
+        "progress": 60,
+        "message": "Uploading data"
+    },
+    "COMPLETE": {
+        "progress": 100,
+        "message": "Backup complete"
+    }
+}
