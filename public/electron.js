@@ -31,7 +31,7 @@ const createWindow = () => {
   ipcMain.handle('close', () => app.quit());
 
   // App functions
-  ipcMain.handle('backup', (event, apiKey) => backup(apiKey, mainWindow));
+  ipcMain.handle('backup', (event, apiKey, backupDirList) => backup(apiKey, backupDirList));
   ipcMain.handle('recover', (event, cid, destDir, apiKey) => recover(cid, destDir, apiKey, mainWindow));
 
   // Storage

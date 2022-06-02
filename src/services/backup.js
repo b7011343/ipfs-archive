@@ -11,10 +11,6 @@ const { store } = require('../utils/store');
 let apiKey;
 let storageClient;
 
-const dirs = [
-  "D:\\Bandicam"
-];
-
 const getDestinationDir = () => (`./${uuid()}.zip`);
 
 // eslint-disable-next-line no-unused-vars
@@ -23,6 +19,7 @@ const cleanupTempFiles = () => {
 };
 
 const uploadIPFS = async (filePath) => {
+  backupUpdate(store, `Uploading ${filePath} to IPFS`);
   const file = await getFilesFromPath(filePath);
   console.log(file)
   const cid = await storageClient.put(file);
@@ -78,13 +75,13 @@ const _backup = async (dir) => {
   console.log(cid);
 };
 
-const backup = async (_apiKey, _mainWindow) => {
+const backup = async (_apiKey, backupDirList) => {
   apiKey = _apiKey;
   console.log('key', apiKey);
   storageClient = new Web3Storage({ token: apiKey });
   console.log('Starting backup');
   backupUpdate(store, 'Starting backup');
-  for (const dir of dirs) {
+  for (const dir of backupDirList) {
     await _backup(dir);
   }
   console.log('Backup complete');

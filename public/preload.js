@@ -14,9 +14,9 @@ process.once("loaded", () => {
   });
 
   contextBridge.exposeInMainWorld('service', {
-    backup: (apiKey) => {
+    backup: (apiKey, backupDirList) => {
       console.log('Backup');
-      ipcRenderer.invoke('backup', apiKey);
+      ipcRenderer.invoke('backup', apiKey, backupDirList);
     },
     recover: (cid, destDir, apiKey) => {
       console.log('Recover');
