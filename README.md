@@ -2,8 +2,6 @@
 
 ## An open-source application which will allow you to freely backup your system data to IPFS, by utilising the <a target='_blank' href='https://web3.storage'>web3.storage</a> API.
 
-#
-
 ## Guide
 1. Make an account on <a target='_blank' href='https://web3.storage'>web3.storage</a>
 2. Generate an API key on your web3.storage account
@@ -23,8 +21,3 @@ It is an IPFS gateway that provides 1TB of storage to all users for free. If you
 
 ### - How do I generate a web3.storage API key?
 Refer to the following link: https://web3.storage/docs/#get-an-api-token
-
-#
-
-## This is a pre-alpha release
-- Scheduled backups not currently configured
