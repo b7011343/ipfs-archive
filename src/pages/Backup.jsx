@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Grid, Button, Typography, Paper, Divider, FormControlLabel, Checkbox, TextField, FormGroup,
          Card, CardActions, CardContent, IconButton, Stack, List, ListItem, ListItemText, ListItemIcon } from '@mui/material';
 import { DeleteOutline, AddBox } from '@mui/icons-material';
@@ -146,7 +146,7 @@ export const Backup = () => {
               color='inherit'
               onClick={() => {
                 window.system.openRecoverDirDialog().then((x) => {
-                  addDir(x);
+                  x && x.length > 0 && addDir(x);
                 });
               }}
             >
