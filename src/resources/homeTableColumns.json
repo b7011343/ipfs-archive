@@ -1,23 +1,16 @@
 [
   {
-    "field": "startTime",
+    "field": "uploadTime",
     "description": "The time the backup began",
-    "headerName": "Start Time (UTC)",
+    "headerName": "Backup Time",
     "type": "string",
-    "flex": 2
+    "flex": 0.5
   },
   {
-    "field": "backupSize",
-    "description": "The number of GB backed up",
-    "headerName": "Backup Size (GB)",
-    "type": "number",
-    "flex": 1
-  },
-  {
-    "field": "duration",
-    "description": "The number of hours it took to complete the backup",
-    "headerName": "Duration (Hours)",
-    "type": "number",
+    "field": "cid",
+    "description": "The content identifier for the backup",
+    "headerName": "Backup CID",
+    "type": "string",
     "flex": 1
   }
 ]

@@ -1,20 +1,42 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Grid, Divider, Button, Paper, Typography } from '@mui/material';
+import axios from 'axios';
+import { Grid, Divider, Button, Paper, Typography, CircularProgress } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import { BackupGraph } from '../components';
 import columns from '../resources/homeTableColumns.json';
+
 const test = new Date();
 
 export const Home = () => {
   const navigate = useNavigate();
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const rows = [
-    { id: 0, startTime: new Date(), backupSize: 122.3, duration: 1.32 },
-    { id: 1, startTime: new Date(), backupSize: 12.9, duration: 0.2 },
-    { id: 2, startTime: new Date(), backupSize: 21.2, duration: 0.7 },
-    { id: 3, startTime: new Date(), backupSize: 167.3, duration: 3 }
-  ];
+  useEffect(() => {
+    const fetch = async () => {
+      const apiKey = await window.storage.get('apiKey');
+      console.log(apiKey);
+      axios.get('https://api.web3.storage/user/uploads', {
+        headers: {
+          'Authorization': `Bearer ${apiKey}`
+        }
+      })
+      .then((res) => {
+        console.log(res.data);
+        const _rows = res.data.map((x, i) => ({
+          id: i,
+          cid: x.cid,
+          uploadTime: x.created
+        }));
+        setRows(_rows);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    };
+    fetch();
+  }, []);
 
   return (
     <Grid container>
@@ -42,13 +64,7 @@ export const Home = () => {
           </Button>
         </Grid>
       </Grid>
-      <Grid item container pt={1} pb={1}>
-        <Divider sx={{ width: '100%' }}/>
-      </Grid>
-      <Grid item container>
-        <BackupGraph/>
-      </Grid>
-      <Grid item container pt={1} pb={1}>
+      <Grid item container pt={1} pb={1} mb={2}>
         <Divider sx={{ width: '100%' }}/>
       </Grid>
       <Grid item container flexDirection='column'>
@@ -58,8 +74,9 @@ export const Home = () => {
         <DataGrid
           rows={rows}
           columns={columns}
-          pageSize={3}
-          rowsPerPageOptions={[3]}
+          loading={loading}
+          pageSize={9}
+          rowsPerPageOptions={[9]}
           autoHeight
           density='compact'
         />
