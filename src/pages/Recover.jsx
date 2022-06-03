@@ -34,7 +34,7 @@ export const Recover = () => {
               id='file-path'
               label='Destination Path'
               disabled={recoverActive}
-              autoFocus
+              // autoFocus
               title={recoverPath}
               value={recoverPath}
               size='small'
