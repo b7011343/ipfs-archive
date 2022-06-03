@@ -11,6 +11,18 @@ export const Home = () => {
   const navigate = useNavigate();
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [backupActive, setBackupActive] = useState(false);
+  const [recoverActive, setRecoverActive] = useState(false);
+
+  useEffect(() => {
+    window.storage.get('backup').then((x) => setBackupActive(x));
+    window.storage.get('recover').then((x) => setRecoverActive(x));
+    const interval = setInterval(() => {
+      window.storage.get('backup').then((x) => setBackupActive(x));
+      window.storage.get('recover').then((x) => setRecoverActive(x));
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const fetch = async () => {
@@ -57,9 +69,15 @@ export const Home = () => {
         </Grid>
         <Grid item container xs={3} flexDirection='column' justifyContent='flex-end' alignItems='flex-end'>
           <Button onClick={() => navigate('/backup')} variant='contained' sx={{ width: 'fit-content', marginBottom: '5px' }} size='small' color='primary'>
+            {backupActive && (
+              <CircularProgress variant='indeterminate' size={15} sx={{ marginRight: '5px' }} color='inherit'/>
+            )}
             Backup
           </Button>
           <Button onClick={() => navigate('/recover')} variant='outlined' sx={{ width: 'fit-content' }} size='small' color='primary'>
+            {recoverActive && (
+              <CircularProgress variant='indeterminate' size={15} sx={{ marginRight: '5px' }} color='inherit'/>
+            )}
             Recover
           </Button>
         </Grid>

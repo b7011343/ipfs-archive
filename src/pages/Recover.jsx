@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Grid, Box, TextField, FormControl, Button, Divider, OutlinedInput, InputAdornment, IconButton, InputLabel, FormHelperText,
-         CircularProgress, Snackbar } from '@mui/material';
+         CircularProgress } from '@mui/material';
 import { DriveFileMove } from '@mui/icons-material';
-
 
 
 export const Recover = () => {
@@ -23,8 +22,6 @@ export const Recover = () => {
     }, [5000]);
     return () => clearInterval(interval);
   }, []);
-
-  console.log(cid, recoverPath)
 
   return (
     <Grid container p={20} pt={24} justifyContent='center' alignItems='center'>
@@ -70,7 +67,9 @@ export const Recover = () => {
             color='primary'
             disabled={recoverActive || !recoverPath || !cid}
             onClick={() => {
-              window.storage.get('apiKey').then((apiKey) => window.service.recover(cid, recoverPath, apiKey));
+              window.storage.get('apiKey').then(async (apiKey) => {
+                await window.service.recover(cid, recoverPath, apiKey);
+              });
             }}
           >
             {recoverActive ? (

@@ -1,4 +1,4 @@
-const { app, BrowserWindow, protocol, ipcMain, dialog, crashReporter } = require('electron');
+const { app, BrowserWindow, protocol, ipcMain, dialog, crashReporter, Notification } = require('electron');
 const { store } = require('../src/utils/store');
 const { backup } = require('../src/services/backup');
 const { recover } = require('../src/services/recover');
@@ -32,7 +32,14 @@ const createWindow = () => {
 
   // App functions
   ipcMain.handle('backup', (event, apiKey, backupDirList) => backup(apiKey, backupDirList));
-  ipcMain.handle('recover', (event, cid, destDir, apiKey) => recover(cid, destDir, apiKey, mainWindow));
+  ipcMain.handle('recover', async (event, cid, destDir, apiKey) => {
+    await recover(cid, destDir, apiKey, mainWindow);
+    new Notification({
+      title: `Recovery Complete - ${cid}`,
+      body: `Files stored at ${destDir}`,
+      icon: './icon.png'
+    }).show();
+  });
 
   // Storage
   ipcMain.handle('get', (event, key) => (store.get(key)));

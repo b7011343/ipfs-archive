@@ -22,8 +22,8 @@ const recover = async (cid, destDir, _apiKey) => {
     resFiles = await storageRes.files();
   } catch (err) {
     store.set('recover', false);
-    console.error(err);
-    return;
+    console.error('err', err);
+    throw new Error(err);
   }
 
   const fileNames = resFiles.map((x) => x._name);
@@ -32,7 +32,12 @@ const recover = async (cid, destDir, _apiKey) => {
 
   for (const fileName of fileNames) {
     try {
-      const fileRes = await axios.get(`https://dweb.link/ipfs/${cid}/${fileName}`, { responseType: 'text', responseEncoding: 'base64' });
+      const fileRes = await axios.get(`https://dweb.link/ipfs/${cid}/${fileName}`, {
+        responseType: 'text',
+        responseEncoding: 'base64',
+        maxContentLength: Infinity,
+        maxBodyLength: Infinity
+      });
       const fileNameUnencrypted = fileName.substring(4, fileName.length);
       const destinationDir = path.normalize(`${destDir.replace(/\\/g,"/")}/${fileNameUnencrypted}`);
       console.log('Destination', destinationDir);

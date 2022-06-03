@@ -96,7 +96,7 @@ export const Backup = () => {
             </Grid>
           </Grid>
           <Grid item container mt={2}>
-            <Paper variant='outlined' sx={{ width: '100%', padding: '10px', height: '195px', overflow: 'auto' }}>
+            <Paper variant='outlined' sx={{ width: '100%', padding: '10px', height: '195px', overflowY: 'auto', overflowX: 'clip' }}>
               <Typography variant='h8' gutterBottom sx={{ marginLeft: '10px' }}>
                 Backup Log
               </Typography>
