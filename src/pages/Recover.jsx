@@ -1,30 +1,42 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Box, TextField, FormControl, Button, Divider, OutlinedInput, InputAdornment, IconButton, InputLabel, FormHelperText } from '@mui/material';
+import { Grid, Box, TextField, FormControl, Button, Divider, OutlinedInput, InputAdornment, IconButton, InputLabel, FormHelperText,
+         CircularProgress, Snackbar } from '@mui/material';
 import { DriveFileMove } from '@mui/icons-material';
 
 
 
 export const Recover = () => {
-  const [cid, setCid] = useState('');
+  const [cid, setCid] = useState();
   const [recoverPath, setRecoverPath] = useState();
+  const [recoverActive, setRecoverActive] = useState(false);
+  
+  const handleChangeCid = (e) => setCid(e.target.value);
 
   useEffect(() => {
     window.storage.get('recoverPath').then((x) => setRecoverPath(x));
   }, []);
 
-  const handleChangeCid = (e) => setCid(e.target.value);
+  useEffect(() => {
+    window.storage.get('recover').then((x) => setRecoverActive(x));;
+    const interval = setInterval(() => {
+      window.storage.get('recover').then((x) => setRecoverActive(x));;
+    }, [5000]);
+    return () => clearInterval(interval);
+  }, []);
+
+  console.log(cid, recoverPath)
 
   return (
     <Grid container p={20} pt={24} justifyContent='center' alignItems='center'>
       <Box>
         <FormControl>
-          <TextField size='small' autoFocus value={cid} onChange={handleChangeCid} label='Backup CID' helperText='You can find your latest backup CIDs on web3.storage' />
+          <TextField size='small' autoFocus value={cid} onChange={handleChangeCid} disabled={recoverActive} label='Backup CID' helperText='You can find your latest backup CIDs on web3.storage' />
           <FormControl title={recoverPath} variant='outlined' sx={{ marginTop: '20px' }}>
             <InputLabel title={recoverPath} htmlFor="file-path" sx={{ marginTop: '-6px' }}>Destination Path</InputLabel>
             <OutlinedInput
               id='file-path'
               label='Destination Path'
-              disabled
+              disabled={recoverActive}
               autoFocus
               title={recoverPath}
               value={recoverPath}
@@ -32,6 +44,7 @@ export const Recover = () => {
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
+                    disabled={recoverActive}
                     onClick={() => {
                       window.system.openRecoverDirDialog().then((dir) => {
                         console.log(dir)
@@ -55,11 +68,19 @@ export const Recover = () => {
             size='small'
             variant='outlined'
             color='primary'
+            disabled={recoverActive || !recoverPath || !cid}
             onClick={() => {
               window.storage.get('apiKey').then((apiKey) => window.service.recover(cid, recoverPath, apiKey));
             }}
           >
-            Start Recovery
+            {recoverActive ? (
+              <>
+                <CircularProgress size={15} sx={{ marginRight: '5px' }} disableShrink variant='indeterminate'/>
+                Recovery in Progress
+              </>
+            ) : (
+              <>Start Recovery</>
+            )}
           </Button>
         </FormControl>
       </Box>

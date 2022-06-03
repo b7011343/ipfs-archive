@@ -48,7 +48,7 @@ export const Backup = () => {
       window.storage.get('backup').then((x) => setBackupActive(x || false));
       window.storage.get('backupProgress').then((x) => setBackupProgress(x || 0));
       window.storage.get('backupStatusMessage').then((x) => setBackupStatus(x || ''));
-    }, 10000);
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
   

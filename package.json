@@ -1,7 +1,7 @@
 {
   "name": "ipfs-archive",
-  "version": "1.0.0-beta",
-  "private": true,
+  "version": "1.0.0-pre-alpha",
+  "private": false,
   "main": "./public/electron.js",
   "homepage": "./",
   "author": "Jacob Whitehead",

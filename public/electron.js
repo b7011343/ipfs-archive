@@ -130,5 +130,3 @@ app.on("web-contents-created", (event, contents) => {
 
 app.on('gpu-process-crashed', (_event, killed) => console.error(_event, killed));
 app.on('renderer-process-crashed', (_e, _w, killed) => console.error(_e, _w, killed));
-
-exports.store = store;

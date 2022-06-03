@@ -4,18 +4,28 @@ const path = require('path');
 const axios = require('axios');
 const crypto = require('crypto');
 const CryptoJS = require('crypto-js');
+const { store } = require('../utils/store');
 
 
 let apiKey;
 let storageClient;
 
 const recover = async (cid, destDir, _apiKey) => {
-  console.log('Starting recovery', cid, _apiKey)
+  console.log('Starting recovery', cid, _apiKey);
+  store.set('recover', true);
   apiKey = _apiKey;
   storageClient = new Web3Storage({ token: apiKey });
+  let resFiles;
 
-  const storageRes = await storageClient.get(cid);
-  const resFiles = await storageRes.files();
+  try {
+    const storageRes = await storageClient.get(cid);
+    resFiles = await storageRes.files();
+  } catch (err) {
+    store.set('recover', false);
+    console.error(err);
+    return;
+  }
+
   const fileNames = resFiles.map((x) => x._name);
   const encryptionKey = CryptoJS.MD5(apiKey).toString();
   const decipher = crypto.createDecipher('aes-256-cbc', encryptionKey);
@@ -35,6 +45,7 @@ const recover = async (cid, destDir, _apiKey) => {
       console.error('Recovery failed', err);
     }
   }
+  store.set('recover', false);
 };
 
 exports.recover = recover;
